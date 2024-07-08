@@ -1,0 +1,95 @@
+## 定义项目中的接口，可用于调试和测试
+
+###
+GET http://localhost:8080/something
+
+###
+GET http://localhost:8080/something/wrapped
+
+###
+GET http://localhost:8080/foo
+
+> {%
+    client.test("response code is 1", function () {
+        const code = response.body["code"]
+        client.assert(code === 1, "'code' field must be 1 in response");
+        client.assert(response.body["data"].hasOwnProperty("key"), "Cannot find 'key' field in response");
+    });
+%}
+
+###
+GET http://localhost:8080/foo/biz
+
+> {%
+    client.test("response code is 1", function () {
+        const code = response.body["code"]
+        client.assert(code === 1, "'code' field must be 1 in response");
+        client.assert(response.body["data"].hasOwnProperty("time"), "Cannot find 'time' field in response");
+    });
+%}
+
+###
+GET http://localhost:8080/foo/oops
+
+> {%
+    client.test("exception in response", function () {
+        const code = response.body["code"]
+        client.assert(code === 5000, "'code' field must be 5000 in response");
+        const msg = response.body["msg"]
+        client.assert(msg === "oops", "'msg' field must be 'oops' in response");
+    });
+%}
+
+###
+POST http://localhost:8080/foo
+
+> {%
+    client.test("response code is 1", function () {
+        const code = response.body["code"]
+        client.assert(code === 1, "'code' field must be 1 in response");
+        client.assert(response.body["data"].hasOwnProperty("key"), "Cannot find 'key' field in response");
+    });
+%}
+
+###
+GET http://localhost:8080/bar
+
+> {%
+    client.test("response code is 1", function () {
+        const code = response.body["code"]
+        client.assert(code === 1, "'code' field must be 1 in response");
+        client.assert(response.body["data"].hasOwnProperty("key"), "Cannot find 'key' field in response");
+    });
+%}
+
+###
+GET http://localhost:8080/bar/now
+
+> {%
+    client.test("unwrapped response", function () {
+        client.assert(response.body.hasOwnProperty("now"), "Cannot find 'now' field in response");
+    });
+%}
+
+###
+GET http://localhost:8080/bar/biz
+
+> {%
+    client.test("response code is 1", function () {
+        const code = response.body["code"]
+        client.assert(code === 1, "'code' field must be 1 in response");
+        client.assert(response.body["data"].hasOwnProperty("time"), "Cannot find 'time' field in response");
+    });
+%}
+
+###
+GET http://localhost:8080/bar/oops
+
+> {%
+    client.test("exception in response", function () {
+        const code = response.body["code"]
+        client.assert(code === 2004, "'code' field must be 5001 in response");
+        const msg = response.body["msg"]
+        client.assert(msg === "user not exist", "'msg' field must be 'user not exist' in response");
+    });
+%}
